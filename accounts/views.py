@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetConfirmView, PasswordResetView
+from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -9,7 +10,14 @@ from django.urls import reverse_lazy
 from .forms import SignupForm
 
 def signup(request):
-    pass
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(settings.LOGIN_URL)
+    else:
+        form = UserCreationForm()
+    return render(request, 'accounts/signup_form.html',{'form':form})
    
 
 def profile(request):
